@@ -8,6 +8,7 @@ import (
 
 	"github.com/pingcap/ng-monitoring/component/conprof"
 	"github.com/pingcap/ng-monitoring/component/domain"
+	"github.com/pingcap/ng-monitoring/component/lockview"
 	"github.com/pingcap/ng-monitoring/component/topology"
 	"github.com/pingcap/ng-monitoring/component/topsql"
 	"github.com/pingcap/ng-monitoring/config"
@@ -97,6 +98,10 @@ func main() {
 	}
 	defer conprof.Stop()
 
+	err = lockview.Init(document.Get(), topology.Subscribe(), pdvariable.Subscribe())
+	if err != nil {
+		log.Fatal("Failed to initialize lockview", zap.Error(err))
+	}
 	service.Init(cfg)
 	defer service.Stop()
 
