@@ -236,6 +236,7 @@ func (bo *backoffScrape) backoffScrape() (record interface{}) {
 		}
 
 		conn, err := dial(bo.ctx, bo.tlsCfg, bo.address)
+		log.Info("dial for topsql", zap.String("address", bo.address))
 		if err != nil {
 			log.Warn("failed to dial scrape target", zap.Any("component", bo.component), zap.Error(err))
 			return false

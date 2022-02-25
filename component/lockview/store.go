@@ -18,7 +18,7 @@ func NewStore(documentDB *genji.DB) Store {
 
 func (s *Store) init() {
 	createTableStmts := []string{
-		"CREATE TABLE IF NOT EXISTS TIDB_TRX (id INTEGER PRIMARY KEY, ALL_SQL_DIGESTS TEXT, EXEC_TIME INTEGER)",
+		"CREATE TABLE IF NOT EXISTS TIDB_TRX (id INTEGER PRIMARY KEY, ALL_SQL_DIGESTS ARRAY, EXEC_TIME INTEGER)",
 	}
 	for _, stmt := range createTableStmts {
 		if err := s.documentDB.Exec(stmt); err != nil {
@@ -27,7 +27,7 @@ func (s *Store) init() {
 	}
 }
 
-func (s *Store) Insert(id uint64, allSqlDigest string, execTime uint64) error {
+func (s *Store) Insert(id uint64, allSqlDigest []string, execTime uint64) error {
 	prepareStmt := "INSERT INTO TIDB_TRX(id, ALL_SQL_DIGESTS, EXEC_TIME) VALUES (?, ?, ?) ON CONFLICT DO NOTHING"
 	prepare, err := s.documentDB.Prepare(prepareStmt)
 	if err != nil {
